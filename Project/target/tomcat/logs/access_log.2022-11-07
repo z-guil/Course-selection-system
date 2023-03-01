@@ -1,0 +1,4 @@
+0:0:0:0:0:0:0:1 - - [07/Nov/2022:23:03:37 +0800] "GET /SqlWork HTTP/1.1" 302 - http-bio-8080-exec-1 0
+0:0:0:0:0:0:0:1 - - [07/Nov/2022:23:03:38 +0800] "GET /SqlWork/ HTTP/1.1" 404 967 http-bio-8080-exec-3 23
+0:0:0:0:0:0:0:1 - - [07/Nov/2022:23:03:38 +0800] "GET /favicon.ico HTTP/1.1" 404 - http-bio-8080-exec-4 0
+0:0:0:0:0:0:0:1 - - [07/Nov/2022:23:04:08 +0800] "GET /SqlWork/loginServlet?name=root1&password=123456 HTTP/1.1" 200 - http-bio-8080-exec-6 875

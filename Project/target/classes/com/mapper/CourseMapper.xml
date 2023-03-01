@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.CourseMapper">
+    <insert id="addCourse">
+        insert into project.tb_course
+        values (null, #{title}, #{teacherName}, #{place}, #{week}, #{time}, #{startToEnd})
+    </insert>
+    <insert id="addTeacher">
+        insert into project.tb_teacher
+        values (null, #{name}, #{password})
+    </insert>
+    <insert id="addStudent">
+        insert into project.tb_student
+        values (null, #{name}, #{password},#{studentClass})
+    </insert>
+    <insert id="takeCourse">
+        insert into project.tb_s_c
+        values(null,#{id},#{courseId})
+    </insert>
+    <update id="upDateCourse">
+        update project.tb_course
+        set title       = #{title},
+            teacherName = #{teacherName},
+            place       = #{place},
+            week        = #{week},
+            time        = #{time},
+            startToEnd  = #{startToEnd}
+        where id = #{id}
+    </update>
+    <update id="upDateTeacher">
+        update project.tb_teacher
+        set name     = #{name},
+            password = #{password}
+        where id = #{id}
+    </update>
+    <update id="upDateStudent">
+        update project.tb_student
+        set name     = #{name},
+            password = #{password},
+            studentClass = #{studentClass}
+        where id = #{id}
+    </update>
+    <delete id="deleteCourseById">
+        SET FOREIGN_KEY_CHECKS=0;
+        delete from project.tb_course where id = #{id};
+        SET FOREIGN_KEY_CHECKS=1;
+    </delete>
+    <delete id="deleteTeacherById">
+        delete
+        from project.tb_teacher
+        where id = #{id}
+    </delete>
+    <delete id="deleteStudentById">
+        delete
+        from project.tb_student
+        where id = #{id}
+    </delete>
+    <delete id="deselectCourse">
+        delete from project.tb_s_c where id_student=#{id} and id_course=#{courseId};
+    </delete>
+
+
+    <select id="selectCourse" resultType="com.pojo.Course">
+        select *
+        from project.tb_course
+        <where>
+
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.teacherName != null and course.teacherName != ''">
+                and teacherName like concat('%','${course.teacherName}','%')
+            </if>
+            <if test="course.place != null and course.place !=''">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null and course.week!=''">
+                and week like concat('%','${course.week}','%')
+            </if>
+
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountCourse" resultType="java.lang.Integer">
+        select count(*)
+        from project.tb_course
+        <where>
+
+            <if test="title != null and title != ''">
+                and title like concat('%','${title}','%')
+            </if>
+            <if test="teacherName != null and teacherName != ''">
+                and teacherName like concat('%','${teacherName}','%')
+            </if>
+            <if test="place != null">
+                and place like concat('%','${place}','%')
+            </if>
+            <if test="week != null">
+                and week like concat('%','${week}','%')
+            </if>
+        </where>
+    </select>
+    <select id="selectTeacher" resultType="com.pojo.User">
+        select *
+        from project.tb_teacher
+        <where>
+            <if test="user.name != null and user.name != ''">
+                and name like concat('%','${user.name}','%')
+            </if>
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountTeacher" resultType="java.lang.Integer">
+        select count(*)
+        from project.tb_teacher
+        <where>
+
+            <if test="name != null and name != ''">
+                and name like concat('%','${name}','%')
+            </if>
+        </where>
+    </select>
+    <select id="selectStudent" resultType="com.pojo.User">
+        select *
+        from project.tb_student
+        <where>
+            <if test="user.name != null and user.name != ''">
+                and name like concat('%','${user.name}','%')
+            </if>
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountStudent" resultType="java.lang.Integer">
+        select count(*)
+        from project.tb_student
+        <where>
+
+            <if test="name != null and name != ''">
+                and name like concat('%','${name}','%')
+            </if>
+        </where>
+    </select>
+    <select id="selectCourse_Optional" resultType="com.pojo.Course">
+        select *
+        from project.tb_course
+        <where>
+            id not in
+            (select c.id
+            from tb_course c,
+            tb_s_c sc,
+            tb_student s
+            where c.id = sc.id_course
+            and s.id = sc.id_student
+            and s.id = #{id})
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.teacherName != null and course.teacherName != ''">
+                and teacherName like concat('%','${course.teacherName}','%')
+            </if>
+            <if test="course.place != null and course.place !=''">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null and course.week!=''">
+                and week like concat('%','${course.week}','%')
+            </if>
+
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountCourse_Optional" resultType="java.lang.Integer">
+        select count(*)
+        from project.tb_course
+        <where>
+            id not in
+            (select c.id
+            from tb_course c,
+            tb_s_c sc,
+            tb_student s
+            where c.id = sc.id_course
+            and s.id = sc.id_student
+            and s.id = #{id})
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.teacherName != null and course.teacherName != ''">
+                and teacherName like concat('%','${course.teacherName}','%')
+            </if>
+            <if test="course.place != null and course.place !=''">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null and course.week!=''">
+                and week like concat('%','${course.week}','%')
+            </if>
+        </where>
+    </select>
+    <select id="selectCourse_Selected" resultType="com.pojo.Course">
+        select c.id, c.title, c.teacherName, c.place, c.week, c.time, c.startToEnd
+        from project.tb_course c,
+        project.tb_s_c sc,
+        project.tb_student s
+        <where>
+            c.id = sc.id_course
+            and s.id = sc.id_student
+            and s.id = #{id}
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.teacherName != null and course.teacherName != ''">
+                and teacherName like concat('%','${course.teacherName}','%')
+            </if>
+            <if test="course.place != null">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null">
+                and week like concat('%','${course.week}','%')
+            </if>
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountCourse_Selected" resultType="java.lang.Integer">
+
+        select count(*)
+        from project.tb_course c,
+        project.tb_s_c sc,
+        project.tb_student s
+        <where>
+            c.id = sc.id_course
+            and s.id = sc.id_student
+            and s.id = #{id}
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.teacherName != null and course.teacherName != ''">
+                and teacherName like concat('%','${course.teacherName}','%')
+            </if>
+            <if test="course.place != null">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null">
+                and week like concat('%','${course.week}','%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMyCourse" resultType="com.pojo.Course">
+        select *
+        from project.tb_course
+
+        <where>
+            teacherName = #{name}
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.place != null and course.place !=''">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null and course.week!=''">
+                and week like concat('%','${course.week}','%')
+            </if>
+
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountMyCourse" resultType="java.lang.Integer">
+        select count(*)
+        from project.tb_course
+        <where>
+            teacherName = #{name}
+            <if test="course.title != null and course.title != ''">
+                and title like concat('%','${course.title}','%')
+            </if>
+            <if test="course.place != null and course.place !=''">
+                and place like concat('%','${course.place}','%')
+            </if>
+            <if test="course.week != null and course.week!=''">
+                and week like concat('%','${course.week}','%')
+            </if>
+        </where>
+    </select>
+    <select id="showNameList" resultType="com.pojo.User">
+        select s.name,s.studentClass
+        from project.tb_course c,
+             project.tb_student s,
+             project.tb_s_c sc
+        where c.id = sc.id_course
+          and s.id = sc.id_student
+          and c.id = #{id};
+    </select>
+
+</mapper>

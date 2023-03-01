@@ -1,0 +1,17 @@
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:19 +0800] "GET /SqlWork HTTP/1.1" 302 - http-bio-8080-exec-1 0
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:20 +0800] "GET /SqlWork/ HTTP/1.1" 304 - http-bio-8080-exec-3 12
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:20 +0800] "GET /SqlWork/css/index.css HTTP/1.1" 304 - http-bio-8080-exec-4 52
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:20 +0800] "GET /SqlWork/element-ui/lib/theme-chalk/index.css HTTP/1.1" 304 - http-bio-8080-exec-2 64
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:20 +0800] "GET /SqlWork/imges/b.png HTTP/1.1" 304 - http-bio-8080-exec-6 4
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:20 +0800] "GET /favicon.ico HTTP/1.1" 404 - http-bio-8080-exec-7 0
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:28 +0800] "GET /SqlWork/studentLoginServlet?id=1&password=123456 HTTP/1.1" 200 7 http-bio-8080-exec-8 984
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:28 +0800] "GET /SqlWork/student.html HTTP/1.1" 304 - http-bio-8080-exec-9 15
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:28 +0800] "GET /SqlWork/css/root.css HTTP/1.1" 304 - http-bio-8080-exec-10 3
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:29 +0800] "GET /SqlWork/showStudentInfoServlet?id=1 HTTP/1.1" 200 78 http-bio-8080-exec-10 48
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:29 +0800] "POST /SqlWork/selectCourse_OptionalServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 433 http-bio-8080-exec-5 111
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:34 +0800] "POST /SqlWork/selectCourse_SelectedServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 297 http-bio-8080-exec-5 16
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:38 +0800] "POST /SqlWork/selectCourse_SelectedServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 297 http-bio-8080-exec-5 8
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:38 +0800] "POST /SqlWork/selectCourse_OptionalServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 433 http-bio-8080-exec-5 7
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:40 +0800] "POST /SqlWork/selectCourse_SelectedServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 297 http-bio-8080-exec-5 6
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:47 +0800] "POST /SqlWork/selectCourse_SelectedServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 297 http-bio-8080-exec-5 8
+0:0:0:0:0:0:0:1 - - [21/Nov/2022:11:23:48 +0800] "POST /SqlWork/selectCourse_OptionalServlet?currentPage=1&pageSize=10&id=1 HTTP/1.1" 200 433 http-bio-8080-exec-5 6

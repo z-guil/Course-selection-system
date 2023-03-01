@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员界面</title>
+    <script src="js/axios-0.18.0.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/root.css?v=<%= System.currentTimeMillis()%>">
+</head>
+<body>
+
+<div id="app">
+
+
+    <el-container style="height: 500px; border: 1px solid #eee">
+        <!--头部-->
+        <el-header style="text-align: right; font-size: 12px">
+            <span id="title">选课系统</span>
+            <el-dropdown trigger="click" @command="logout()">
+                <i class="el-icon-setting" id="icon-setting" style="margin-right: 20px"></i>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <span id="namespan"></span>
+        </el-header>
+        <!--修改课程弹框-->
+        <el-dialog
+                title="修改课程信息"
+                :visible.sync="updateCourseVisible"
+                width="30%"
+        >
+
+            <el-form ref="form" :model="upDateCourseModel" label-width="80px" :rules="rules">
+                <el-form-item label="课程名称" prop="title">
+                    <el-input v-model="upDateCourseModel.title"></el-input>
+                </el-form-item>
+                <el-form-item label="授课老师" prop="teacherName">
+                    <el-input v-model="upDateCourseModel.teacherName"></el-input>
+                </el-form-item>
+                <el-form-item label="上课地点" prop="place">
+                    <el-input v-model="upDateCourseModel.place"></el-input>
+                </el-form-item>
+                <el-form-item label="周~" prop="week">
+                    <el-select v-model="upDateCourseModel.week">
+                        <el-option label="周一" value="周一"></el-option>
+                        <el-option label="周二" value="周二"></el-option>
+                        <el-option label="周三" value="周三"></el-option>
+                        <el-option label="周四" value="周四"></el-option>
+                        <el-option label="周五" value="周五"></el-option>
+                        <el-option label="周六" value="周六"></el-option>
+                        <el-option label="周日" value="周日"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="时间段" prop="time">
+                    <el-select v-model="upDateCourseModel.time">
+                        <el-option label="1-2节" value="1-2节"></el-option>
+                        <el-option label="3-4节" value="3-4节"></el-option>
+                        <el-option label="5-6节" value="5-6节"></el-option>
+                        <el-option label="7-8节" value="7-8节"></el-option>
+                        <el-option label="9-10节" value="9-10节"></el-option>
+                        <el-option label="9-11节" value="9-11节"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="始末时间" prop="startToEnd">
+                    <el-select v-model="upDateCourseModel.startToEnd">
+                        <el-option label="1-8周" value="1-8周"></el-option>
+                        <el-option label="1-16周" value="1-16周"></el-option>
+                        <el-option label="1-17周" value="1-17周"></el-option>
+                        <el-option label="1-18周" value="1-18周"></el-option>
+                        <el-option label="2-9周" value="2-9周"></el-option>
+                        <el-option label="2-16周" value="2-16周"></el-option>
+                        <el-option label="2-17周" value="2-17周"></el-option>
+                        <el-option label="4-11周" value="4-11周"></el-option>
+                        <el-option label="6-9周" value="6-9周"></el-option>
+                        <el-option label="7-15周" value="7-15周"></el-option>
+                        <el-option label="9-16周" value="9-16周"></el-option>
+                    </el-select>
+                </el-form-item>
+
+
+                <el-form-item>
+                    <el-button type="primary" @click="updatedone1()">提交</el-button>
+                    <el-button @click="updateCourseVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!--修改教师弹框-->
+        <el-dialog
+                title="修改教师信息"
+                :visible.sync="updateTeacherVisible"
+                width="30%"
+        >
+            <el-form ref="form" :model="upDateTeacherModel" label-width="80px" :rules="rules">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="upDateTeacherModel.name"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="upDateTeacherModel.password"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="updatedone2()">提交</el-button>
+                    <el-button @click="updateTeacherVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!--修改学生弹框-->
+        <el-dialog
+                title="修改学生信息"
+                :visible.sync="updateStudentVisible"
+                width="30%"
+        >
+            <el-form ref="form" :model="upDateStudentModel" label-width="80px" :rules="rules">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="upDateStudentModel.name"></el-input>
+                </el-form-item>
+                <el-form-item label="班级" prop="studentClass">
+                    <el-input v-model="upDateStudentModel.studentClass"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="upDateStudentModel.password"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="updatedone3()">提交</el-button>
+                    <el-button @click="updateStudentVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!--新增课程弹框-->
+        <el-dialog title="新增课程" :visible.sync="addCourseVisible" center="center" width="30%">
+
+            <el-form :model="addCourseModel" :rules="rules" ref="ruleForm" label-width="30%" class="demo-ruleForm">
+                <el-form-item label="课程名称" prop="title">
+                    <el-input v-model="addCourseModel.title"></el-input>
+                </el-form-item>
+                <el-form-item label="授课老师" prop="teacherName">
+                    <el-input v-model="addCourseModel.teacherName"></el-input>
+                </el-form-item>
+                <el-form-item label="上课地点" prop="place">
+                    <el-input v-model="addCourseModel.place"></el-input>
+                </el-form-item>
+                <el-form-item label="周~" prop="week">
+                    <el-select v-model="addCourseModel.week">
+                        <el-option label="周一" value="周一"></el-option>
+                        <el-option label="周二" value="周二"></el-option>
+                        <el-option label="周三" value="周三"></el-option>
+                        <el-option label="周四" value="周四"></el-option>
+                        <el-option label="周五" value="周五"></el-option>
+                        <el-option label="周六" value="周六"></el-option>
+                        <el-option label="周日" value="周日"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="时间段" prop="time">
+                    <el-select v-model="addCourseModel.time">
+                        <el-option label="1-2节" value="1-2节"></el-option>
+                        <el-option label="3-4节" value="3-4节"></el-option>
+                        <el-option label="5-6节" value="5-6节"></el-option>
+                        <el-option label="7-8节" value="7-8节"></el-option>
+                        <el-option label="9-10节" value="9-10节"></el-option>
+                        <el-option label="9-11节" value="9-11节"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="始末时间" prop="startToEnd">
+                    <el-select v-model="addCourseModel.startToEnd">
+                        <el-option label="1-8周" value="1-8周"></el-option>
+                        <el-option label="1-16周" value="1-16周"></el-option>
+                        <el-option label="1-17周" value="1-17周"></el-option>
+                        <el-option label="1-18周" value="1-18周"></el-option>
+                        <el-option label="2-9周" value="2-9周"></el-option>
+                        <el-option label="2-16周" value="2-16周"></el-option>
+                        <el-option label="2-17周" value="2-17周"></el-option>
+                        <el-option label="4-11周" value="4-11周"></el-option>
+                        <el-option label="6-9周" value="6-9周"></el-option>
+                        <el-option label="7-15周" value="7-15周"></el-option>
+                        <el-option label="9-16周" value="9-16周"></el-option>
+                    </el-select>
+                </el-form-item>
+
+
+                <el-form-item>
+                    <el-button type="primary" @click="addCourse()">立即创建</el-button>
+                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+
+            </el-form>
+        </el-dialog>
+        <!--新增教师弹框-->
+        <el-dialog title="新增教师" :visible.sync="addTeacherVisible" center="center" width="30%">
+
+            <el-form :model="addTeacherModel" :rules="rules" ref="ruleForm2" label-width="30%" class="demo-ruleForm">
+                <el-form-item label="教师名称" prop="name">
+                    <el-input v-model="addTeacherModel.name"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="addTeacherModel.password"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="addTeacher()">立即创建</el-button>
+                    <el-button @click="addTeacherVisible=false">取消</el-button>
+                </el-form-item>
+
+            </el-form>
+        </el-dialog>
+        <!--新增学生弹框-->
+        <el-dialog title="新增学生" :visible.sync="addStudentVisible" center="center" width="30%">
+
+            <el-form :model="addStudentModel" :rules="rules" ref="ruleForm3" label-width="30%" class="demo-ruleForm">
+                <el-form-item label="学生名称" prop="name">
+                    <el-input v-model="addStudentModel.name"></el-input>
+                </el-form-item>
+                <el-form-item label="班级" prop="studentClass">
+                    <el-input v-model="addStudentModel.studentClass"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="addStudentModel.password"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="addStudent()">立即创建</el-button>
+                    <el-button @click="addStudentVisible=false">取消</el-button>
+                </el-form-item>
+
+            </el-form>
+        </el-dialog>
+
+        <el-container>
+            <!--侧边栏-->
+            <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+                <el-menu>
+                    <el-submenu index="1">
+                        <template slot="title"><i class="el-icon-menu"></i>课程操作</template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1" @click="CourseSearch()">显示课程列表</el-menu-item>
+                            <el-menu-item index="1-2" @click="addCourseVisible = true">新增课程</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-submenu index="2">
+                        <template slot="title"><i class="el-icon-menu"></i>教师操作</template>
+                        <el-menu-item-group>
+                            <el-menu-item index="2-1" @click="TeacherSearch">显示教师列表</el-menu-item>
+                            <el-menu-item index="2-2" @click="addTeacherVisible = true">新增教师</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-submenu index="3">
+                        <template slot="title"><i class="el-icon-menu"></i>学生操作</template>
+                        <el-menu-item-group>
+                            <el-menu-item index="3-1" @click="StudentSearch">显示学生列表</el-menu-item>
+                            <el-menu-item index="3-2" @click="addStudentVisible = true">新增学生</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                </el-menu>
+            </el-aside>
+
+            <el-container>
+                <el-main>
+                    <!--查询表单-->
+                    <div style="display: flex; align-content: center; justify-content: center; ">
+                        <!--课程查询-->
+                        <el-form :inline="true" :model="searchCourse" class="SearchCourse" id="SearchCourse">
+                            <el-form-item label="课程名称">
+                                <el-input v-model="searchCourse.title" placeholder="请输入"></el-input>
+                            </el-form-item>
+                            <el-form-item label="授课老师">
+                                <el-input v-model="searchCourse.teacherName" placeholder="请输入"></el-input>
+                            </el-form-item>
+                            <el-form-item label="地点">
+                                <el-select v-model="searchCourse.place">
+                                    <el-option label="旭日楼" value="旭日楼"></el-option>
+                                    <el-option label="电子楼" value="电子楼"></el-option>
+                                    <el-option label="科技楼" value="科技楼"></el-option>
+                                    <el-option label="化工楼" value="化工楼"></el-option>
+                                    <el-option label="服装楼" value="服装楼"></el-option>
+                                    <el-option label="音乐楼" value="音乐楼"></el-option>
+                                    <el-option label="田径场" value="田径场"></el-option>
+                                    <el-option label="体育馆" value="体育馆"></el-option>
+                                    <el-option label="跳水馆" value="跳水馆"></el-option>
+                                    <el-option label="网球场" value="网球场"></el-option>
+                                    <el-option label="篮球场" value="篮球场"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="周~">
+                                <el-select v-model="searchCourse.week">
+                                    <el-option label="周一" value="周一"></el-option>
+                                    <el-option label="周二" value="周二"></el-option>
+                                    <el-option label="周三" value="周三"></el-option>
+                                    <el-option label="周四" value="周四"></el-option>
+                                    <el-option label="周五" value="周五"></el-option>
+                                    <el-option label="周六" value="周六"></el-option>
+                                    <el-option label="周日" value="周日"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="selectAll" class="button">搜索</el-button>
+                                <el-button type="primary" @click="reset()" class="button">重置</el-button>
+                            </el-form-item>
+                        </el-form>
+                        <!--教师查询-->
+                        <el-form :inline="true" :model="searchTeacher" class="SearchTeacher" id="SearchTeacher">
+                            <el-form-item label="教师名称">
+                                <el-input v-model="searchTeacher.name" placeholder="请输入"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="selectTeacher()" class="button">搜索</el-button>
+                            </el-form-item>
+                        </el-form>
+                        <!--学生查询-->
+                        <el-form :inline="true" :model="searchStudent" class="SearchStudent" id="SearchStudent">
+                            <el-form-item label="学生名称">
+                                <el-input v-model="searchStudent.name" placeholder="请输入"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="selectStudent" class="button">搜索</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <!--表格=====课程-->
+                    <template>
+                        <el-table
+                                id="tb_c"
+                                :data="tableData"
+                                style="width: 100%"
+                        >
+                            <el-table-column
+                                    type="index"
+                                    width="50">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="title"
+                                    label="课程名称"
+                                    align="center"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="teacherName"
+                                    label="授课老师"
+                                    align="center"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="place"
+                                    align="center"
+                                    label="地点">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="week"
+                                    align="center"
+                                    label="周~">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="time"
+                                    align="center"
+                                    label="时段">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="startToEnd"
+                                    align="center"
+                                    label="始末周">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    label="操作">
+                                <template slot-scope="scope">
+                                    <el-row>
+                                        <el-button type="primary" icon="el-icon-edit" @click="update1(scope.row)" circle></el-button>
+
+                                        <el-button type="danger" @click="opendelete1(scope.row)"  icon="el-icon-delete" circle></el-button>
+                                    </el-row>
+                                </template>
+
+                            </el-table-column>
+
+                        </el-table>
+                    </template>
+                    <!--表格=====教师-->
+                    <template>
+                        <el-table id="tb_t"
+                                  :data="tableData_Teacher"
+                                  style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    width="50">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="id"
+                                    align="center"
+                                    label="用户id">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    align="center"
+                                    label="名称">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="password"
+                                    align="center"
+                                    label="密码">
+                            </el-table-column>
+
+                            <el-table-column
+                                    align="center"
+                                    label="操作">
+                                <template slot-scope="scope">
+                                    <el-row>
+                                        <el-button type="primary" @click="update2(scope.row)" class="button">修改
+                                        </el-button>
+                                        <el-button type="danger" @click="opendelete2(scope.row)" class="button">删除
+                                        </el-button>
+                                    </el-row>
+                                </template>
+
+                            </el-table-column>
+
+                        </el-table>
+                    </template>
+                    <!--表格=====学生-->
+                    <template>
+                        <el-table id="tb_s"
+                                  :data="tableData_Student"
+                                  style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    width="50">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="id"
+                                    align="center"
+                                    label="用户id">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    align="center"
+                                    label="名称">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="studentClass"
+                                    align="center"
+                                    label="班级">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="password"
+                                    align="center"
+                                    label="密码">
+                            </el-table-column>
+
+                            <el-table-column
+                                    align="center"
+                                    label="操作">
+                                <template slot-scope="scope">
+                                    <el-row>
+                                        <el-button type="primary" @click="update3(scope.row)" class="button">修改
+                                        </el-button>
+                                        <el-button type="danger" @click="opendelete3(scope.row)" class="button">删除
+                                        </el-button>
+                                    </el-row>
+                                </template>
+
+                            </el-table-column>
+
+                        </el-table>
+                    </template>
+                </el-main>
+                <!--底部-->
+                <el-footer style="display: flex; align-content: center; justify-content: center ">
+                    <!--分页工具条-->
+                    <el-pagination id="page1"
+                                   @size-change="handleSizeChange1"
+                                   @current-change="handleCurrentChange1"
+                                   :current-page="currentPage1"
+                                   :page-sizes="[10,20,30,40,50]"
+                                   :page-size="10"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="totalCount">
+                    </el-pagination>
+                    <el-pagination id="page2"
+                                   @size-change="handleSizeChange2"
+                                   @current-change="handleCurrentChange2"
+                                   :current-page="currentPage2"
+                                   :page-sizes="[10,20,30,40,50]"
+                                   :page-size="10"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="totalCount">
+                    </el-pagination>
+                    <el-pagination id="page3"
+                                   @size-change="handleSizeChange3"
+                                   @current-change="handleCurrentChange3"
+                                   :current-page="currentPage3"
+                                   :page-sizes="[10,20,30,40,50]"
+                                   :page-size="10"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="totalCount">
+                    </el-pagination>
+
+                </el-footer>
+
+            </el-container>
+        </el-container>
+    </el-container>
+
+
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        mounted() {
+            let id = localStorage.getItem("id");
+            this.CourseSearch();
+        },
+        data() {
+            return {
+                //修改信息弹框
+                updateCourseVisible: false,
+                updateTeacherVisible: false,
+                updateStudentVisible: false,
+                //表单验证规则
+                rules: {
+                    title: [
+                        {required: true, message: '请输入课程名称', trigger: 'blur'},
+                    ],
+                    teacherName: [
+                        {required: true, message: '请输入授课老师', trigger: 'blur'},
+                    ],
+                    place: [
+                        {required: true, message: '请输入授课老师', trigger: 'blur'},
+                    ],
+                    week: [
+                        {required: true, message: '请选择周~', trigger: 'change'}
+                    ],
+                    time: [
+                        {required: true, message: '请选择上课时间段', trigger: 'change'}
+                    ],
+                    startToEnd: [
+                        {required: true, message: '请选择始末时间', trigger: 'change'}
+                    ],
+                    name: [
+                        {required: true, message: '请输入名称', trigger: 'blur'},
+                    ],
+                    password: [
+                        {required: true, message: '请输入密码', trigger: 'blur'},
+                    ],
+                    studentClass: [
+                        {required: true, message: '请输入班级', trigger: 'blur'},
+                    ]
+
+                },
+                //添加课程的弹框隐藏/显示标志
+                addCourseVisible: false,
+                addTeacherVisible: false,
+                addStudentVisible: false,
+                //添加老师的模型
+                addTeacherModel: {
+                    name: '',
+                    password: ''
+                },
+                //添加学生的模型
+                addStudentModel: {
+                    name: '',
+                    studentClass:'',
+                    password: ''
+                },
+                //添加课程的模型
+                addCourseModel: {
+                    id: '',
+                    title: '',
+                    teacherName: '',
+                    place: '',
+                    week: '',
+                    time: '',
+                    startToEnd: ''
+                },
+                //修改老师的模型
+                upDateTeacherModel: {
+                    name: '',
+                    password: ''
+                },
+                //修改学生的模型
+                upDateStudentModel: {
+                    name: '',
+                    studentClass:'',
+                    password: ''
+                },
+                //修改课程的模型
+                upDateCourseModel: {
+                    id: '',
+                    title: '',
+                    teacherName: '',
+                    place: '',
+                    week: '',
+                    time: '',
+                    startToEnd: ''
+                },
+                //查询老师的模型
+                searchTeacher: {
+                    name: ''
+                },
+                //查询学生的模型
+                searchStudent: {
+                    name: ''
+                },
+                //查询课程的模型
+                searchCourse: {
+                    id: '',
+                    title: '',
+                    teacherName: '',
+                    place: '',
+                    week: '',
+                    time: '',
+                    startToEnd: ''
+                },
+                //总记录条数
+                totalCount: 100,
+                //显示的记录条数
+                pageSize1: 10,
+                pageSize2: 10,
+                pageSize3: 10,
+                // 当前页码
+                currentPage1: 1,
+                currentPage2: 1,
+                currentPage3: 1,
+                // 表格数据
+                tableData: [{
+                    id: '',
+                    title: '高等数学',
+                    teacherName: '张老师',
+                    place: '旭日楼101',
+                    week: "周一",
+                    time: "1-2节",
+                    startToEnd: "1-17周"
+                }],
+                tableData_Teacher: [{
+                    id:"null",
+                    name: "null",
+                    password: "null"
+                }],
+                tableData_Student: [{
+                    id:"s_id",
+                    name: "s_null",
+                    password: "s_null"
+                }]
+            }
+        },
+        methods: {
+            //查询所有课程
+            selectAll() {
+                var _this = this;
+                //分页查询
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/selectCourseServlet?currentPage=" + _this.currentPage1 + "&pageSize=" + _this.pageSize1,
+                    data: this.searchCourse
+                }).then(function (resp) {
+                    _this.tableData = resp.data.rows;
+                    _this.totalCount = resp.data.totalCount;
+                    console.log(resp.data.rows);
+
+                })
+            },
+            selectTeacher() {
+                var _this = this;
+                //分页查询
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/selectTeacherServlet?currentPage=" + _this.currentPage2 + "&pageSize=" + _this.pageSize2,
+                    data: this.searchTeacher
+                }).then(function (resp) {
+                    _this.tableData_Teacher = resp.data.rows;
+                    _this.totalCount = resp.data.totalCount;
+                    console.log(resp.data.rows);
+                })
+            },
+            selectStudent() {
+                var _this = this;
+                //分页查询
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/selectStudentServlet?currentPage=" + _this.currentPage3 + "&pageSize=" + _this.pageSize3,
+                    data: this.searchStudent
+                }).then(function (resp) {
+                    _this.tableData_Student = resp.data.rows;
+                    _this.totalCount = resp.data.totalCount;
+                    console.log(resp.data.rows);
+                })
+            },
+            //分页工具条===课程表
+            handleSizeChange1(val) {
+                //设置每页显示条数并打印
+                this.pageSize1 = val;
+                this.selectAll();
+            },
+            handleCurrentChange1(val) {
+                //设置当前页码并打印
+                this.currentPage1 = val;
+                this.selectAll();
+            },
+            //分页工具条===教师表
+            handleSizeChange2(val) {
+                this.pageSize2 = val;
+                this.selectTeacher();
+            },
+            handleCurrentChange2(val) {
+                this.currentPage2 = val;
+                this.selectTeacher();
+            },
+            //分页工具条===学生表
+            handleSizeChange3(val) {
+                this.pageSize3 = val;
+                this.selectStudent();
+            },
+            handleCurrentChange3(val) {
+                this.currentPage3 = val;
+                this.selectStudent();
+            },
+            //退出登录
+            logout() {
+                location.href = "http://localhost:8080/SqlWork";
+            },
+            //重置按钮，重置所有查询表单
+            reset() {
+                this.searchCourse = {};
+                this.selectAll();
+            },
+            //查询表单
+            //1.查询表单的切换
+            //2.执行查询操作
+            CourseSearch() {
+                this.searchCourse = {};
+                this.selectAll();
+                document.getElementById("tb_c").style.display = "block";
+                document.getElementById("tb_t").style.display = "none";
+                document.getElementById("tb_s").style.display = "none";
+                document.getElementById("SearchCourse").style.display = "block";
+                document.getElementById("SearchTeacher").style.display = "none";
+                document.getElementById("SearchStudent").style.display = "none";
+                document.getElementById("page1").style.display = "block";
+                document.getElementById("page2").style.display = "none";
+                document.getElementById("page3").style.display = "none";
+            },
+            TeacherSearch() {
+                this.searchTeacher = {};
+                this.selectTeacher();
+                document.getElementById("tb_c").style.display = "none";
+                document.getElementById("tb_t").style.display = "block";
+                document.getElementById("tb_s").style.display = "none";
+                document.getElementById("SearchCourse").style.display = "none";
+                document.getElementById("SearchTeacher").style.display = "block";
+                document.getElementById("SearchStudent").style.display = "none";
+                document.getElementById("page1").style.display = "none";
+                document.getElementById("page2").style.display = "block";
+                document.getElementById("page3").style.display = "none";
+            },
+            StudentSearch() {
+                this.searchStudent = {};
+                this.selectStudent();
+                document.getElementById("tb_c").style.display = "none";
+                document.getElementById("tb_t").style.display = "none";
+                document.getElementById("tb_s").style.display = "block";
+                document.getElementById("SearchCourse").style.display = "none";
+                document.getElementById("SearchTeacher").style.display = "none";
+                document.getElementById("SearchStudent").style.display = "block";
+                document.getElementById("page1").style.display = "none";
+                document.getElementById("page2").style.display = "none";
+                document.getElementById("page3").style.display = "block";
+            },
+            // 新增课程
+            addCourse() {
+                var _this = this;
+                if (
+                    _this.addCourseModel.title == '' ||
+                    _this.addCourseModel.teacherName == '' ||
+                    _this.addCourseModel.place == '' ||
+                    _this.addCourseModel.week == '' ||
+                    _this.addCourseModel.time == '' ||
+                    _this.addCourseModel.startToEnd == ''
+                ) {
+                    this.$alert('请输入完整内容', '添加失败', {
+                        confirmButtonText: '确定'
+                    });
+                } else {
+
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/SqlWork/addCourseServlet",
+                        data: this.addCourseModel
+                    }).then(function (resp) {
+                        if (resp.data == "success") {
+                            console.log("Add:success");
+                            _this.addCourseVisible = false;
+                            _this.selectAll();
+                            _this.resetForm('ruleForm');
+                            _this.open();
+                        }
+                    })
+                }
+
+            },
+            // 新增教师
+            addTeacher() {
+                var _this = this;
+                if (
+                    _this.addTeacherModel.name == '' ||
+                    _this.addTeacherModel.password == ''
+                ) {
+                    this.$alert('请输入完整内容', '添加失败', {
+                        confirmButtonText: '确定'
+                    });
+                } else {
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/SqlWork/addTeacherServlet",
+                        data: this.addTeacherModel
+                    }).then(function (resp) {
+                        if (resp.data == "success") {
+                            console.log("Add:success");
+                            _this.addTeacherVisible = false;
+                            _this.TeacherSearch();
+                            _this.resetForm('ruleForm2');
+                            _this.open2();
+                        }
+                    })
+                }
+            },
+            // 新增学生
+            addStudent() {
+                var _this = this;
+                if (
+                    _this.addStudentModel.name == '' ||
+                    _this.addStudentModel.password == ''
+                ) {
+                    this.$alert('请输入完整内容', '添加失败', {
+                        confirmButtonText: '确定'
+                    });
+                } else {
+                    axios({
+                        method: "post",
+                        url: "http://localhost:8080/SqlWork/addStudentServlet",
+                        data: this.addStudentModel
+                    }).then(function (resp) {
+                        if (resp.data == "success") {
+                            console.log("Add:success");
+                            _this.addStudentVisible = false;
+                            _this.StudentSearch();
+                            _this.resetForm('ruleForm3');
+                            _this.open3();
+                        }
+                    })
+                }
+            },
+            //新增成功提示框
+            open() {
+                this.$alert('添加成功', '新增课程', {
+                    confirmButtonText: '确定'
+                });
+            },
+            open2() {
+                this.$alert('添加成功', '新增教师', {
+                    confirmButtonText: '确定'
+                });
+            },
+            open3() {
+                this.$alert('添加成功', '新增学生', {
+                    confirmButtonText: '确定'
+                });
+            },
+            //重置新增表单
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
+            ,
+            //删除课程
+            deleteById1(row) {
+                let _this = this;
+                let rowId = row.id;
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/deleteCourseServlet",
+                    data: rowId
+                }).then(function (resp) {
+                    if (resp.data == "delete:success") {
+                        console.log("delete:success");
+                        _this.selectAll();
+                    }
+
+                })
+            },
+            //删除教师
+            deleteById2(row) {
+                let _this = this;
+                let rowId = row.id;
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/deleteTeacherServlet",
+                    data: rowId
+                }).then(function (resp) {
+                    if (resp.data == "delete:success") {
+                        console.log("delete:success");
+                        _this.selectTeacher();
+                    }
+
+                })
+            },
+            //删除学生
+            deleteById3(row) {
+                let _this = this;
+                let rowId = row.id;
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/deleteStudentServlet",
+                    data: rowId
+                }).then(function (resp) {
+                    if (resp.data == "delete:success") {
+                        console.log("delete:success");
+                        _this.selectStudent();
+                    }
+
+                })
+            },
+            //删除时弹框
+            opendelete1(row) {
+                var _this = this;
+                this.$confirm('此操作将删除该课程, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.deleteById1(row)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            opendelete2(row) {
+                var _this = this;
+                this.$confirm('此操作将删除该教师信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.deleteById2(row)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            opendelete3(row) {
+                var _this = this;
+                this.$confirm('此操作将删除该学生信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.deleteById3(row)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //数据回显
+            update1(row) {
+                this.upDateCourseModel = {
+                    id: row.id,
+                    title: row.title,
+                    teacherName: row.teacherName,
+                    place: row.place,
+                    week: row.week,
+                    time: row.time,
+                    startToEnd: row.startToEnd
+                };
+                // 打开修改课程窗口
+                this.updateCourseVisible = true;
+            },
+            update2(row) {
+                this.upDateTeacherModel = {
+                    id: row.id,
+                    name: row.name,
+                    password: row.password
+                };
+                this.updateTeacherVisible = true;
+            },
+            update3(row) {
+                this.upDateStudentModel = {
+                    id: row.id,
+                    name: row.name,
+                    password: row.password,
+                    studentClass:row.studentClass
+                };
+                this.updateStudentVisible = true;
+            },
+            //发送修改请求
+            updatedone1() {
+                var _this = this;
+
+                // 发送 ajax 请求，添加数据
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/upDateCourseServlet",
+                    data: _this.upDateCourseModel
+                }).then(resp => {
+                    if (resp.data == "delete:success") {
+                        // 添加成功
+                        // 关闭窗口
+                        _this.updateCourseVisible = false;
+                        // 重新查询数据
+                        _this.selectAll();
+
+                        // 弹出消息提示
+                        _this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            },
+            updatedone2() {
+                var _this = this;
+                // 发送 ajax 请求，添加数据
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/upDateTeacherServlet",
+                    data: _this.upDateTeacherModel
+                }).then(resp => {
+                    if (resp.data == "delete:success") {
+                        // 添加成功
+                        // 关闭窗口
+                        _this.updateTeacherVisible = false;
+                        // 重新查询数据
+                        _this.selectTeacher();
+                        // 弹出消息提示
+                        _this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            },
+            updatedone3() {
+                var _this = this;
+                // 发送 ajax 请求，添加数据
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/SqlWork/upDateStudentServlet",
+                    data: _this.upDateStudentModel
+                }).then(resp => {
+                    if (resp.data == "delete:success") {
+                        // 添加成功
+                        // 关闭窗口
+                        _this.updateStudentVisible = false;
+                        // 重新查询数据
+                        _this.selectStudent();
+                        // 弹出消息提示
+                        _this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            },
+
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>选课系统-登录界面</title>
+    <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
+
+</head>
+<body>
+
+<script src="js/axios-0.18.0.js"></script>
+<script src="js/vue.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+
+
+
+
+    <div id="app">
+
+
+        <div id="loginDiv">
+            <form action="" method="get" id="form">
+
+                <el-row :gutter="30">
+                    <h1 id="loginMsg">用&nbsp;户&nbsp;登&nbsp;录</h1>
+                </el-row>
+                <el-row :gutter="20">
+                    <p>用户ID&emsp;：<input id="id" name="id" type="text"></p>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <p>密码&emsp;&emsp;：<input id="password" name="password" type="password"></p>
+                </el-row>
+                <el-row type="flex" justify="space-around">
+                    <template>
+                        <el-radio-group v-model="radio">
+                            <el-radio :label="3" @change="showRadio()">学生</el-radio>
+                            <el-radio :label="6" @change="showRadio()">教师</el-radio>
+                            <el-radio :label="9" @change="showRadio()">管理员</el-radio>
+                        </el-radio-group>
+                    </template>
+                </el-row>
+
+                <el-row type="flex" class="row-bg" justify="space-between">
+                    <el-col :span="3"><div class="grid-content bg-purple-light"></div></el-col>
+                    <el-col :span="9"><div class="grid-content bg-purple">
+                        <el-button type="info" @click="submit()">登录</el-button></div></el-col>
+                    <el-col :span="3"><div class="grid-content bg-purple-light"></div></el-col>
+                    <el-col :span="9"><div class="grid-content bg-purple">
+                        <el-button type="info" @click="reset()">重置</el-button></div></el-col>
+                </el-row>
+
+
+
+            </form>
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+<script>
+    new Vue({
+        el:"#app",
+        mounted(){
+
+        },
+        data(){
+            return{
+                radio: 3
+            }
+        },
+        methods: {
+            //用户名或密码错误提示框
+            err_NameOrPassword(){
+                this.$message.error('用户名或密码错误');
+            },
+            //重置按钮
+            reset(){
+                document.getElementById("id").value="";
+                document.getElementById("password").value="";
+            },
+            showRadio(){
+                console.log(this.radio);
+            },
+            submit(){
+                let _this = this;
+                //获取用户名和密码
+                let id = document.getElementById("id").value;
+                let password = document.getElementById("password").value;
+                //判断身份
+                if (this.radio == 3 ){
+                    console.log("学生登录");
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/SqlWork/studentLoginServlet?id="+id+"&password="+password
+                    }).then(function (resp) {
+                        if(resp.data=='success'){
+                            //把name存起来，然后到另一个html接收
+                            localStorage.setItem("id",id);
+                            location.href="http://localhost:8080/SqlWork/student.html";
+                        }else{
+                            _this.err_NameOrPassword();
+                        }
+                    })
+                }else if (this.radio == 6 ){
+                    console.log("老师登录");
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/SqlWork/teacherLoginServlet?id="+id+"&password="+password
+                    }).then(function (resp) {
+                        if(resp.data=='success'){
+                            //把name存起来，然后到另一个html接收
+                            localStorage.setItem("id",id);
+                            location.href="http://localhost:8080/SqlWork/teacher.html";
+                        }else{
+                            _this.err_NameOrPassword();
+                        }
+                    })
+                }else if (this.radio == 9 ){
+                    console.log("管理员登录");
+                    axios({
+                        method:"get",
+                        url:"http://localhost:8080/SqlWork/rootLoginServlet?id="+id+"&password="+password
+                    }).then(function (resp) {
+                        if(resp.data=='success'){
+                            //把name存起来，然后到另一个html接收
+                            localStorage.setItem("id",id);
+                            location.href="http://localhost:8080/SqlWork/root.html";
+                        }else{
+                            _this.err_NameOrPassword();
+                        }
+                    })
+                }
+
+
+
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
