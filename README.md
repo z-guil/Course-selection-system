@@ -42,7 +42,7 @@
 
 3. 打开IDEA的File -> Setting -> Plugins , 然后找到Maven Helper插件并安装
 
-   ![img5](E:\GitHub\Course-selection-system\img\img5.png)
+   ![img5](img\img5.png)
 
 4. 确保依赖成功导入后，在任意文件下右键选择Run Maven，二级菜单中选择tomcat7:run
 
