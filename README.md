@@ -40,24 +40,24 @@
 
 2. 在IDEA中打开项目(Project)
 
-3. 确保依赖成功导入后，在任意文件下右键选择Run Maven，二级菜单中选择tomcat7:run
+3. 打开IDEA的File -> Setting -> Plugins , 然后找到Maven Helper插件并安装
 
-4. 在控制台可以看到输出的
+   ![img5](E:\GitHub\Course-selection-system\img\img5.png)
+
+4. 确保依赖成功导入后，在任意文件下右键选择Run Maven，二级菜单中选择tomcat7:run
+
+   <img src="img/img.png" style="zoom:65%;" />
+
+5. 在控制台可以看到输出的
 
    > [INFO] Running war on *http://localhost:8080/SqlWork*
 
-5. 点击即可访问系统的页面
+   <img src="img/img2.png" style="zoom:70%;" />
 
-6. 选择身份，输入导入的id和密码(一般是123456)，登录即可进入对应的页面
+6. 点击即可访问系统的页面
 
+7. 选择身份，输入导入的id和密码(一般是123456)，登录即可进入对应的页面
 
+​	<img src="img/img3.png" style="zoom:70%;" />
 
-
-
-<img src="img.png" style="zoom:65%;" />
-
-<img src="img2.png" style="zoom:70%;" />
-
-<img src="img3.png" style="zoom:70%;" />
-
-<img src="img4.png" style="zoom:70%;" />
+​	<img src="img/img4.png" style="zoom:70%;" />
